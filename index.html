@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharath Tungala | Portfolio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #020202;         /* Pure Black */
+            --text-main: #ffffff;        /* Pure White */
+            --text-muted: #dcdcdc;       
+            
+            --primary: #00e5ff;          /* Bright Cyan */
+            --secondary: #ff007f;        /* Bright Pink */
+            
+            --card-bg: rgba(15, 15, 15, 0.85); 
+            --card-border: rgba(255, 255, 255, 0.15);
+            
+            --font-main: 'Poppins', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND CANVAS --- */
+        canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0f1014 0%, #000000 100%);
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 15px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 1000;
+        }
+
+        /* --- GLITCH LOGO ANIMATION --- */
+        .logo {
+            font-family: var(--font-code);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            position: relative;
+            cursor: pointer;
+            letter-spacing: 2px;
+            /* Neon Glow by default */
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        /* The Glitch Layers (Hidden by default, visible on hover) */
+        .logo::before,
+        .logo::after {
+            content: attr(data-text); /* Grabs text from HTML */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000; /* Matches header bg */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Hover Effect: Trigger Glitch */
+        .logo:hover::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--secondary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 0.5s infinite linear alternate-reverse;
+            opacity: 1;
+        }
+
+        .logo:hover::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--primary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-2 0.5s infinite linear alternate-reverse;
+            opacity: 1;
+        }
+
+        /* Keyframes for Glitch Movement */
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            20% { clip: rect(80px, 9999px, 100px, 0); }
+            40% { clip: rect(20px, 9999px, 60px, 0); }
+            60% { clip: rect(50px, 9999px, 90px, 0); }
+            80% { clip: rect(10px, 9999px, 40px, 0); }
+            100% { clip: rect(70px, 9999px, 120px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(60px, 9999px, 90px, 0); }
+            20% { clip: rect(10px, 9999px, 40px, 0); }
+            40% { clip: rect(80px, 9999px, 120px, 0); }
+            60% { clip: rect(30px, 9999px, 50px, 0); }
+            80% { clip: rect(90px, 9999px, 100px, 0); }
+            100% { clip: rect(20px, 9999px, 60px, 0); }
+        }
+
+        .nav-links { display: flex; gap: 25px; }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        #home {
+            height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        h1 { font-size: 4rem; margin-bottom: 15px; line-height: 1.1; font-weight: 700; }
+        h1 span { color: var(--primary); }
+        
+        .typewriter {
+            font-family: var(--font-code);
+            color: var(--secondary);
+            font-size: 1.6rem;
+            margin-bottom: 30px;
+            min-height: 1.6em;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 14px 40px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-family: var(--font-code);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 25px rgba(0, 229, 255, 0.4); }
+
+        /* --- SECTIONS COMMON --- */
+        section { padding: 100px 10%; min-height: 80vh; }
+        
+        h2 {
+            font-size: 2.5rem; margin-bottom: 50px;
+            position: relative; display: inline-block;
+            color: var(--text-main);
+        }
+        
+        h2::after {
+            content: ''; position: absolute;
+            left: 0; bottom: -8px; width: 60px; height: 4px;
+            background: var(--secondary);
+        }
+
+        /* --- CARDS & GRID --- */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 35px;
+            border-radius: 12px;
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            height: 100%;
+        }
+
+        .card:hover { transform: translateY(-7px); border-color: var(--primary); }
+        
+        .card h3 { color: var(--primary); margin-bottom: 8px; font-size: 1.4rem; }
+        .card h4 { color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
+        
+        .card .date { font-family: var(--font-code); font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        .card ul { list-style: none; padding-left: 5px; }
+        .card ul li { margin-bottom: 10px; font-size: 1rem; color: var(--text-main); position: relative; padding-left: 25px; line-height: 1.6; }
+        .card ul li::before { content: '▹'; color: var(--secondary); position: absolute; left: 0; font-size: 1.2rem; }
+
+        /* --- SKILLS SECTION STYLES --- */
+        .skill-category {
+            margin-bottom: 15px;
+        }
+        .skill-header {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .skill-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        
+        .skill-tag {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--text-main);
+            transition: 0.3s;
+            cursor: default;
+        }
+        .skill-tag:hover { 
+            background: rgba(0, 229, 255, 0.15); 
+            border-color: var(--primary); 
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* --- CONTACT --- */
+        .contact-box {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 60px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+        .contact-link {
+            display: inline-block; margin: 15px;
+            font-size: 1.3rem; color: var(--text-main); text-decoration: none;
+            transition: 0.3s;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+        }
+        .contact-link:hover { color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; background: rgba(0, 229, 255, 0.1); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            nav { padding: 15px; flex-direction: column; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; font-size: 0.8rem; }
+            section { padding: 60px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="custom-canvas"></canvas>
+
+    <nav>
+        <div class="logo" data-text="Bharath T.">Bharath T.</div>
+        
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#experience">Experience</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section id="home">
+        <h1>Bharath <span>Tungala</span></h1>
+        <div class="typewriter" id="typewriter"></div>
+        <p style="max-width: 600px; color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">
+            Innovative Data Engineer & Developer solving complex challenges with modern technology.
+        </p>
+        <a href="#contact" class="btn">Contact Me</a>
+    </section>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <div class="card">
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                I am a dedicated tech enthusiast my passion lies in pushing the boundaries of innovation and embracing continuous learning. 
+                <br><br>
+                My goal is to harness my expertise in <strong>Python, and Data Engineering</strong> to solve complex business challenges and spearhead technological advancements.
+            </p>
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2>Technical Skills</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3><i class="fas fa-code"></i> Core Development</h3>
+                
+                <div class="skill-category">
+                    <div class="skill-header">Programming Languages</div>
+                    <div class="skill-container">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">C Language</span>
+                    </div>
+                </div>
+
+                <div class="skill-category" style="margin-top: 20px;">
+                    <div class="skill-header">Web Development</div>
+                    <div class="skill-container">
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">JavaScript (Basic)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-database"></i> Data & Tools</h3>
+                
+                <div class="skill-category">
+                    <div class="skill-header">Databases & ETL</div>
+                    <div class="skill-container">
+                        <span class="skill-tag">MySQL</span>
+                        <span class="skill-tag">Snowflake</span>
+                        <span class="skill-tag">Talend Open Studio</span>
+                    </div>
+                </div>
+
+                <div class="skill-category" style="margin-top: 20px;">
+                    <div class="skill-header">Tools & Platforms</div>
+                    <div class="skill-container">
+                        <span class="skill-tag">Linux</span>
+                        <span class="skill-tag">MS Office</span>
+                        <span class="skill-tag">VS Code</span>
+                        <span class="skill-tag">GitHub</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <h2>Education</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>B.Tech CSE</h3>
+                <span class="date">2021 – 2025 | Vignan University</span>
+                <p><strong>CGPA: 7.14</strong></p>
+                <p style="margin-top:10px; color:#ccc;">Computer Science & Engineering</p>
+            </div>
+            <div class="card">
+                <h3>Intermediate</h3>
+                <span class="date">2019 – 2021 | Sri Chaitanya</span>
+                <p><strong>CGPA: 6.82</strong></p>
+                <p style="margin-top:10px; color:#ccc;">M.P.C Stream</p>
+            </div>
+            <div class="card">
+                <h3>X</h3>
+                <span class="date">2018 – 2019 | NRI Vikas</span>
+                <p><strong>CGPA: 8.0</strong></p>
+                <p style="margin-top:10px; color:#ccc;">S.S.C Stream</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2>Internship Experience</h2>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
+                <h3>Intern - Data Engineering</h3>
+                <span class="date" style="border:none; color:var(--secondary);">Nov 2024 – Mar 2025</span>
+            </div>
+            <h4 style="color:#aaa; margin-bottom:15px;">Sonata Software, Hyderabad</h4>
+            <ul>
+                <li>Specialized in <strong>Talend Open Studio</strong> and <strong>Snowflake</strong> for ETL processes.</li>
+                <li>Worked on real-world industry scenarios involving SQL optimization.</li>
+                <li>Analyzed complex data problems and collaborated with senior developers.</li>
+                <li>Coordinated with fellow interns to deliver project milestones efficiently.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2>Technical Projects</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Brain Tumor Detection</h3>
+                <span class="date">Deep Learning & 3D Imaging</span>
+                <p style="margin-bottom: 15px;">Developed a hybrid detection model (SVM-KNN, CNN-SVM) using 3D MRI images to enhance prediction accuracy using TensorFlow.</p>
+                <div class="skill-container">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">CNN</span>
+                    <span class="skill-tag">OpenCV</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>ASL Gesture Recognition</h3>
+                <span class="date">Computer Vision</span>
+                <p style="margin-bottom: 15px;">A real-time system bridging communication gaps for the disabled. Achieved <strong>93.83% accuracy</strong> in translating gestures to text.</p>
+                <div class="skill-container">
+                    <span class="skill-tag">Transfer Learning</span>
+                    <span class="skill-tag">ROI Analysis</span>
+                    <span class="skill-tag">Deep Learning</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="contact-box">
+            <h2>Let's Connect</h2>
+            <p style="color: #ccc; margin-bottom: 30px;">I am currently available for opportunities in Software Development.</p>
+            <div>
+                <a href="mailto:tungalabharath@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> tungalabharath@gmail.com</a>
+                <br>
+                <a href="tel:+917815996965" class="contact-link"><i class="fas fa-phone"></i> +91 7815996965</a>
+            </div>
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #888;">Based in Avanigadda, Andhra Pradesh</p>
+        </div>
+    </section>
+
+    <script>
+        /* -----------------------------------------------------------
+           CUSTOM ANIMATION: YOUR DETAILS FLOATING IN BACKGROUND
+           ----------------------------------------------------------- */
+        const canvas = document.getElementById('custom-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        // Custom Floating Words based on your Resume
+        const words = [
+            "Bharath", "Tungala", "7815996965", 
+            "</>", "Python", "C", "HTML", 
+            "Data Engineer", "Snowflake", "Talend", 
+            "Brain Tumor", "ASL", "Deep Learning",
+            "Sonata", "SQL", "Linux", "IoT",
+            "Accuracy 93%", "Generative AI", "Vignan"
+        ];
+
+        let particles = [];
+        const mouse = { x: null, y: null, radius: 150 };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+        window.addEventListener('resize', resize);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8; 
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.size = Math.random() * 12 + 10; 
+                this.text = words[Math.floor(Math.random() * words.length)];
+                
+                this.color = Math.random() > 0.5 
+                    ? 'rgba(0, 229, 255, 0.3)'  // Faint Cyan
+                    : 'rgba(255, 0, 127, 0.3)'; // Faint Pink
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const dxForce = (dx / distance) * force * 2;
+                    const dyForce = (dy / distance) * force * 2;
+                    this.x -= dxForce; 
+                    this.y -= dyForce;
+                }
+            }
+
+            draw() {
+                ctx.font = this.size + 'px Fira Code';
+                ctx.fillStyle = this.color;
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            let numberOfParticles = (width * height) / 20000; 
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, 0.05)`; 
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        animate();
+
+        /* -----------------------------------------------------------
+           TYPEWRITER EFFECT (Main Heading)
+           ----------------------------------------------------------- */
+        const textEl = document.getElementById('typewriter');
+        const phrases = ["Data Engineer", "Python Developer", "Problem Solver", "Innovator"];
+        let phraseIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+
+        function type() {
+            const current = phrases[phraseIdx];
+            if (isDeleting) {
+                textEl.textContent = current.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                textEl.textContent = current.substring(0, charIdx + 1);
+                charIdx++;
+            }
+
+            if (!isDeleting && charIdx === current.length) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                phraseIdx = (phraseIdx + 1) % phrases.length;
+            }
+            setTimeout(type, isDeleting ? 100 : 150);
+        }
+        type();
+    </script>
+</body>
+</html>
