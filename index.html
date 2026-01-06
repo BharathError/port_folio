@@ -3,537 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bharath Tungala | Portfolio</title>
+    <meta name="description" content="Bharath Tungala - Next Gen Data Engineer">
+    <title>Bharath Tungala | Data Engineer</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- VARIABLES & RESET --- */
         :root {
-            
-            --bg-color: #020202;         /* Pure Black */
-            --text-main: #ffffff;        /* Pure White */
-            --text-muted: #dcdcdc;       
-            
-            --primary: #00e5ff;          /* Bright Cyan */
-            --secondary: #ff007f;        /* Bright Pink */
-            
-            --card-bg: rgba(15, 15, 15, 0.85); 
-            --card-border: rgba(255, 255, 255, 0.15);
-            
-            --font-main: 'Poppins', sans-serif;
-            --font-code: 'Fira Code', monospace;
+            --bg-dark: #030305;
+            --card-bg: rgba(20, 25, 40, 0.4);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff0a;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --font-main: 'Rajdhani', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Hide default cursor */ }
 
         body {
+            background-color: var(--bg-dark);
             font-family: var(--font-main);
-            background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
+            width: 100vw;
         }
 
+        html { scroll-behavior: smooth; }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px; height: 8px; background-color: var(--neon-cyan);
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid var(--neon-cyan);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body:hover .cursor-outline { opacity: 1; }
+
         /* --- BACKGROUND CANVAS --- */
-        canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+        #neural-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at center, #0f1014 0%, #000000 100%);
+            background: radial-gradient(circle at 50% 50%, #111119 0%, #000000 100%);
+        }
+
+        /* --- SCROLL PROGRESS BAR --- */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+            z-index: 1001;
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
 
         /* --- NAVIGATION --- */
         nav {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 15px 40px;
+            position: fixed; top: 0; width: 100%;
+            padding: 20px 5%;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid var(--card-border);
+            background: rgba(3, 3, 5, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 1000;
         }
 
-        /* --- GLITCH LOGO ANIMATION --- */
         .logo {
             font-family: var(--font-code);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            text-transform: uppercase;
-            position: relative;
-            cursor: pointer;
+            font-size: 1.5rem; font-weight: 700;
+            color: #fff; text-transform: uppercase;
             letter-spacing: 2px;
-            /* Neon Glow by default */
-            text-shadow: 0 0 5px var(--primary);
+            position: relative;
         }
+        .logo span { color: var(--neon-cyan); }
 
-        /* The Glitch Layers (Hidden by default, visible on hover) */
-        .logo::before,
-        .logo::after {
-            content: attr(data-text); /* Grabs text from HTML */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000; /* Matches header bg */
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        /* Hover Effect: Trigger Glitch */
-        .logo:hover::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--secondary);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 0.5s infinite linear alternate-reverse;
-            opacity: 1;
-        }
-
-        .logo:hover::after {
-            left: -2px;
-            text-shadow: -1px 0 var(--primary);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim-2 0.5s infinite linear alternate-reverse;
-            opacity: 1;
-        }
-
-        /* Keyframes for Glitch Movement */
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 30px, 0); }
-            20% { clip: rect(80px, 9999px, 100px, 0); }
-            40% { clip: rect(20px, 9999px, 60px, 0); }
-            60% { clip: rect(50px, 9999px, 90px, 0); }
-            80% { clip: rect(10px, 9999px, 40px, 0); }
-            100% { clip: rect(70px, 9999px, 120px, 0); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(60px, 9999px, 90px, 0); }
-            20% { clip: rect(10px, 9999px, 40px, 0); }
-            40% { clip: rect(80px, 9999px, 120px, 0); }
-            60% { clip: rect(30px, 9999px, 50px, 0); }
-            80% { clip: rect(90px, 9999px, 100px, 0); }
-            100% { clip: rect(20px, 9999px, 60px, 0); }
-        }
-
-        .nav-links { display: flex; gap: 25px; }
-
+        .nav-links { display: flex; gap: 40px; }
         .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: 0.3s;
+            text-decoration: none; color: var(--text-muted);
+            font-size: 1.1rem; font-weight: 600;
+            position: relative; transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
+        .nav-links a:hover { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
+        .nav-links a::before {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--neon-cyan); transition: 0.3s;
+        }
+        .nav-links a:hover::before { width: 100%; }
 
-        .nav-links a:hover { color: var(--primary); }
+        .menu-btn { display: none; font-size: 1.8rem; color: #fff; }
 
         /* --- HERO SECTION --- */
-        #home {
-            height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center;
-            padding: 0 20px;
+        section { padding: 120px 10%; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
+
+        .hero-content { z-index: 2; max-width: 800px; }
+
+        /* GLITCH TEXT EFFECT */
+        .glitch-wrapper { display: inline-block; position: relative; margin-bottom: 20px; }
+        .glitch {
+            font-size: 5rem; font-weight: 800; line-height: 1;
+            color: #fff; letter-spacing: 3px;
+            position: relative;
+            text-transform: uppercase;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+        .glitch::before {
+            left: 2px; text-shadow: -2px 0 var(--neon-purple);
+            clip-path: inset(44% 0 61% 0);
+            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px; text-shadow: -2px 0 var(--neon-cyan);
+            clip-path: inset(12% 0 55% 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
         }
 
-        h1 { font-size: 4rem; margin-bottom: 15px; line-height: 1.1; font-weight: 700; }
-        h1 span { color: var(--primary); }
-        
-        .typewriter {
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 10% 0); }
+            40% { clip-path: inset(70% 0 30% 0); }
+            60% { clip-path: inset(20% 0 70% 0); }
+            80% { clip-path: inset(50% 0 20% 0); }
+            100% { clip-path: inset(0% 0 90% 0); }
+        }
+
+        .role-text {
             font-family: var(--font-code);
-            color: var(--secondary);
-            font-size: 1.6rem;
-            margin-bottom: 30px;
-            min-height: 1.6em;
-            font-weight: 600;
+            font-size: 1.5rem; color: var(--neon-cyan);
+            margin-bottom: 20px; display: block;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
         }
 
-        .btn {
-            padding: 14px 40px;
-            border: 2px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
-            font-family: var(--font-code);
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.3s;
-            margin-top: 20px;
-            letter-spacing: 1px;
+        .hero-desc {
+            font-size: 1.2rem; color: var(--text-muted); line-height: 1.8;
+            margin-bottom: 40px; max-width: 600px;
+            border-left: 3px solid var(--neon-purple);
+            padding-left: 20px;
         }
 
-        .btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 25px rgba(0, 229, 255, 0.4); }
+        /* --- BUTTONS --- */
+        .btn-group { display: flex; gap: 20px; flex-wrap: wrap; }
 
-        /* --- SECTIONS COMMON --- */
-        section { padding: 100px 10%; min-height: 80vh; }
-        
-        h2 {
-            font-size: 2.5rem; margin-bottom: 50px;
-            position: relative; display: inline-block;
-            color: var(--text-main);
+        .cyber-btn {
+            position: relative; padding: 15px 40px;
+            font-family: var(--font-code); font-weight: 700;
+            text-transform: uppercase; text-decoration: none;
+            color: var(--neon-cyan); background: transparent;
+            border: 1px solid var(--neon-cyan);
+            overflow: hidden; transition: 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
         }
-        
-        h2::after {
-            content: ''; position: absolute;
-            left: 0; bottom: -8px; width: 60px; height: 4px;
-            background: var(--secondary);
+        .cyber-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            letter-spacing: 2px;
+        }
+        .cyber-btn.filled {
+            background: var(--neon-cyan); color: #000;
+            border: 1px solid var(--neon-cyan);
+        }
+        .cyber-btn.filled:hover {
+            background: #fff; color: #000;
+            box-shadow: 0 0 30px #fff;
         }
 
-        /* --- CARDS & GRID --- */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        /* --- TITLES --- */
+        .section-title {
+            font-size: 3rem; font-weight: 700; color: #fff;
+            margin-bottom: 60px; position: relative; display: inline-block;
+            text-transform: uppercase;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: -10px; left: 0;
+            width: 60px; height: 4px; background: var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
 
-        .card {
+        /* --- 3D CARDS (TILT EFFECT) --- */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;
+            perspective: 1000px; /* Required for 3D effect */
+        }
+
+        .tilt-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            padding: 35px;
-            border-radius: 12px;
-            transition: 0.3s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            height: 100%;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+            transition: transform 0.1s ease-out; /* Smooth follow */
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        /* Card Inner Content for Depth */
+        .card-content {
+            transform: translateZ(30px); /* Pops text out */
         }
 
-        .card:hover { transform: translateY(-7px); border-color: var(--primary); }
-        
-        .card h3 { color: var(--primary); margin-bottom: 8px; font-size: 1.4rem; }
-        .card h4 { color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
-        
-        .card .date { font-family: var(--font-code); font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        
-        .card ul { list-style: none; padding-left: 5px; }
-        .card ul li { margin-bottom: 10px; font-size: 1rem; color: var(--text-main); position: relative; padding-left: 25px; line-height: 1.6; }
-        .card ul li::before { content: '▹'; color: var(--secondary); position: absolute; left: 0; font-size: 1.2rem; }
+        .tilt-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+        }
 
-        /* --- SKILLS SECTION STYLES --- */
-        .skill-category {
-            margin-bottom: 15px;
-        }
-        .skill-header {
-            font-size: 1.1rem;
-            color: var(--secondary);
-            margin-bottom: 10px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .skill-container { display: flex; flex-wrap: wrap; gap: 10px; }
-        
-        .skill-tag {
+        .card-icon { font-size: 2.5rem; color: var(--neon-purple); margin-bottom: 20px; }
+        .tilt-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
+        .tilt-card p { color: var(--text-muted); line-height: 1.6; }
+
+        /* --- SKILLS --- */
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .tech-pill {
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            font-family: var(--font-code);
-            font-size: 0.85rem;
-            color: var(--text-main);
-            transition: 0.3s;
-            cursor: default;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-family: var(--font-code); font-size: 0.9rem;
+            color: var(--neon-cyan);
         }
-        .skill-tag:hover { 
-            background: rgba(0, 229, 255, 0.15); 
-            border-color: var(--primary); 
-            color: var(--primary);
-            transform: translateY(-2px);
+
+        /* --- TIMELINE (EXPERIENCE) --- */
+        .timeline { border-left: 2px solid rgba(255,255,255,0.1); margin-left: 20px; padding-left: 40px; }
+        .timeline-item { position: relative; margin-bottom: 50px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -49px; top: 5px;
+            width: 16px; height: 16px; background: var(--bg-dark);
+            border: 2px solid var(--neon-purple); border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-purple);
         }
+        .timeline-date {
+            color: var(--neon-purple); font-family: var(--font-code); margin-bottom: 10px; display: block;
+        }
+
+        /* --- PROJECTS --- */
+        .project-stat {
+            display: flex; gap: 20px; margin-top: 20px; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-item { text-align: center; }
+        .stat-val { display: block; font-size: 1.2rem; font-weight: bold; color: #fff; }
+        .stat-lbl { font-size: 0.8rem; color: var(--text-muted); }
 
         /* --- CONTACT --- */
-        .contact-box {
-            text-align: center;
-            background: var(--card-bg);
-            padding: 60px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-        }
-        .contact-link {
-            display: inline-block; margin: 15px;
-            font-size: 1.3rem; color: var(--text-main); text-decoration: none;
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .contact-info a {
+            display: flex; align-items: center; gap: 15px;
+            color: #fff; text-decoration: none; font-size: 1.2rem;
+            margin-bottom: 20px; padding: 20px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
             transition: 0.3s;
-            padding: 10px 20px;
-            border: 1px solid transparent;
         }
-        .contact-link:hover { color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; background: rgba(0, 229, 255, 0.1); }
+        .contact-info a:hover {
+            background: rgba(0, 243, 255, 0.1); border-color: var(--neon-cyan);
+            transform: translateX(10px);
+        }
+        .social-links { display: flex; gap: 20px; margin-top: 30px; }
+        .social-links a { font-size: 2rem; color: var(--text-muted); transition: 0.3s; }
+        .social-links a:hover { color: var(--neon-cyan); transform: translateY(-5px); }
 
-        /* RESPONSIVE */
+        /* --- MOBILE MENU OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.95); z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 40px;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .mobile-overlay.active { right: 0; }
+        .mobile-overlay a { font-size: 2rem; color: #fff; text-decoration: none; text-transform: uppercase; font-weight: 700; }
+        .mobile-overlay a:hover { color: var(--neon-purple); letter-spacing: 5px; transition: 0.3s; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .glitch { font-size: 3.5rem; }
+            .section-title { font-size: 2.5rem; }
+            .contact-grid { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
-            h1 { font-size: 3rem; }
-            nav { padding: 15px; flex-direction: column; gap: 15px; }
-            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; font-size: 0.8rem; }
-            section { padding: 60px 5%; }
+            .nav-links { display: none; }
+            .menu-btn { display: block; }
+            section { padding: 80px 5%; }
+            .glitch { font-size: 2.8rem; }
+            .hero-desc { font-size: 1rem; }
+            .tilt-card { padding: 25px; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="custom-canvas"></canvas>
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <canvas id="neural-canvas"></canvas>
+    <div class="scroll-progress" id="progressBar"></div>
 
     <nav>
-        <div class="logo" data-text="Bharath T.">Bharath T.</div>
-        
+        <div class="logo">Bharath <span>T.</span></div>
         <div class="nav-links">
             <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#skills">Skills</a>
-            <a href="#experience">Experience</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
+            <a href="#skills">Stack</a>
+            <a href="#experience">XP</a>
+            <a href="#projects">Work</a>
+            <a href="#contact">Connect</a>
         </div>
+        <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
     </nav>
 
-    <section id="home">
-        <h1>Bharath <span>Tungala</span></h1>
-        <div class="typewriter" id="typewriter"></div>
-        <p style="max-width: 600px; color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">
-            Innovative Data Engineer & Developer solving complex challenges with modern technology.
-        </p>
-        <a href="#contact" class="btn">Contact Me</a>
-    </section>
+    <div class="mobile-overlay" id="mobileOverlay">
+        <a href="#home" onclick="toggleMenu()">Home</a>
+        <a href="#skills" onclick="toggleMenu()">Tech Stack</a>
+        <a href="#experience" onclick="toggleMenu()">Experience</a>
+        <a href="#projects" onclick="toggleMenu()">Projects</a>
+        <a href="#contact" onclick="toggleMenu()">Contact</a>
+        <div style="font-size: 2rem; color: var(--neon-cyan); cursor: pointer;" onclick="toggleMenu()">&times;</div>
+    </div>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <div class="card">
-            <p style="font-size: 1.1rem; line-height: 1.8;">
-                I am a dedicated tech enthusiast my passion lies in pushing the boundaries of innovation and embracing continuous learning. 
-                <br><br>
-                My goal is to harness my expertise in <strong>Python, Java, and Data Engineering</strong> to solve complex business challenges and spearhead technological advancements.
+    <section id="home">
+        <div class="hero-content">
+            <span class="role-text"><i class="fas fa-code"></i> 2025 Computer Science Grad</span>
+            <div class="glitch-wrapper">
+                <div class="glitch" data-text="Bharath Tungala">Bharath Tungala</div>
+            </div>
+            <p class="hero-desc">
+                Data Engineer & Optimization Specialist from Andhra Pradesh. <br>
+                Bridging the gap between raw data and actionable intelligence using Snowflake, Python, and Deep Learning. I don't just write code; I architect solutions.
             </p>
+            <div class="btn-group">
+                <a href="#contact" class="cyber-btn filled">Init Protocol: Hire Me</a>
+                <a href="./Bharath_Tungala_Resume.pdf" target="_blank" class="cyber-btn">Download Resume_V1.0</a>
+            </div>
         </div>
     </section>
 
     <section id="skills">
-        <h2>Technical Skills</h2>
-        <div class="grid-2">
-            <div class="card">
-                <h3><i class="fas fa-code"></i> Core Development</h3>
-                
-                <div class="skill-category">
-                    <div class="skill-header">Programming Languages</div>
-                    <div class="skill-container">
-                        <span class="skill-tag">Python</span>
-        
-                        <span class="skill-tag">C Language</span>
-                         <span class="skill-tag">Java</span>
-                    </div>
-                </div>
-
-                <div class="skill-category" style="margin-top: 20px;">
-                    <div class="skill-header">Web Development</div>
-                    <div class="skill-container">
-                        <span class="skill-tag">HTML5</span>
-                        <span class="skill-tag">CSS3</span>
-                        <span class="skill-tag">JavaScript (Basic)</span>
+        <h2 class="section-title">Technical Arsenal</h2>
+        <div class="grid-container">
+            <div class="tilt-card" data-tilt>
+                <div class="card-content">
+                    <i class="fas fa-database card-icon"></i>
+                    <h3>Data Engineering</h3>
+                    <p>Building robust pipelines and scalable architectures.</p>
+                    <div class="tech-stack">
+                        <span class="tech-pill">Snowflake</span>
+                        <span class="tech-pill">Talend ETL</span>
+                        <span class="tech-pill">MySQL</span>
+                        <span class="tech-pill">Data Warehousing</span>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h3><i class="fas fa-database"></i> Data & Tools</h3>
-                
-                <div class="skill-category">
-                    <div class="skill-header">Databases & ETL</div>
-                    <div class="skill-container">
-                        <span class="skill-tag">MySQL</span>
-                        <span class="skill-tag">Snowflake</span>
-                        <span class="skill-tag">Talend Open Studio</span>
-                    </div>
-                </div>
-
-                <div class="skill-category" style="margin-top: 20px;">
-                    <div class="skill-header">Tools & Platforms</div>
-                    <div class="skill-container">
-                        <span class="skill-tag">Linux</span>
-                        <span class="skill-tag">MS Office</span>
-                        <span class="skill-tag">VS Code</span>
-                        <span class="skill-tag">GitHub</span>
+            <div class="tilt-card" data-tilt>
+                <div class="card-content">
+                    <i class="fas fa-laptop-code card-icon"></i>
+                    <h3>Core Development</h3>
+                    <p>Solving competitive problems and building backend logic.</p>
+                    <div class="tech-stack">
+                        <span class="tech-pill">Python (Adv)</span>
+                        <span class="tech-pill">Java</span>
+                        <span class="tech-pill">C / C++</span>
+                        <span class="tech-pill">DSA</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <section id="education">
-        <h2>Education</h2>
-        <div class="grid-3">
-            <div class="card">
-                <h3>B.Tech CSE</h3>
-                <span class="date">2021 – 2025 | Vignan University</span>
-                <p><strong>CGPA: 7.14</strong></p>
-                <p style="margin-top:10px; color:#ccc;">Computer Science & Engineering</p>
-            </div>
-            <div class="card">
-                <h3>Intermediate</h3>
-                <span class="date">2019 – 2021 | Sri Chaitanya</span>
-                <p><strong>CGPA: 6.82</strong></p>
-                <p style="margin-top:10px; color:#ccc;">M.P.C Stream</p>
-            </div>
-            <div class="card">
-                <h3>X</h3>
-                <span class="date">2018 – 2019 | NRI Vikas</span>
-                <p><strong>CGPA: 8.0</strong></p>
-                <p style="margin-top:10px; color:#ccc;">S.S.C Stream</p>
+            <div class="tilt-card" data-tilt>
+                <div class="card-content">
+                    <i class="fas fa-brain card-icon"></i>
+                    <h3>AI & ML</h3>
+                    <p>Applying intelligence to imaging and data streams.</p>
+                    <div class="tech-stack">
+                        <span class="tech-pill">TensorFlow</span>
+                        <span class="tech-pill">OpenCV</span>
+                        <span class="tech-pill">CNNs</span>
+                        <span class="tech-pill">Deep Learning</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="experience">
-        <h2>Internship Experience</h2>
-        <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
-                <h3>Intern - Data Engineering</h3>
-                <span class="date" style="border:none; color:var(--secondary);">Nov 2024 – Mar 2025</span>
+        <h2 class="section-title">Mission History</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="timeline-date">Nov 2024 – Mar 2025</span>
+                <div class="tilt-card" data-tilt style="max-width: 800px;">
+                    <div class="card-content">
+                        <h3>Data Engineering Intern</h3>
+                        <p style="color: var(--neon-cyan); margin-bottom: 10px;">Sonata Software, Hyderabad</p>
+                        <p>
+                            Deployed directly into the data infrastructure team. <br><br>
+                            > Engineered optimized ETL pipelines using Talend.<br>
+                            > Managed cloud data warehousing operations on Snowflake.<br>
+                            > Reduced query latency through SQL optimization.<br>
+                            > Executed Agile methodologies for rapid delivery.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <h4 style="color:#aaa; margin-bottom:15px;">Sonata Software, Hyderabad</h4>
-            <ul>
-                <li>Specialized in <strong>Talend Open Studio</strong> and <strong>Snowflake</strong> for ETL processes.</li>
-                <li>Worked on real-world industry scenarios involving SQL optimization.</li>
-                <li>Analyzed complex data problems and collaborated with senior developers.</li>
-                <li>Coordinated with fellow interns to deliver project milestones efficiently.</li>
-            </ul>
+            
+            <div class="timeline-item">
+                <span class="timeline-date">2021 – 2025</span>
+                <div class="tilt-card" data-tilt style="max-width: 800px;">
+                    <div class="card-content">
+                        <h3>B.Tech - Computer Science</h3>
+                        <p style="color: var(--neon-cyan); margin-bottom: 10px;">Vignan's Foundation for Science, Technology & Research</p>
+                        <p>
+                            Specialized in Data Science and Algorithms. Active Competitve Programmer (Codechef, Hackerrank).
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="projects">
-        <h2>Technical Projects</h2>
-        <div class="grid-2">
-            <div class="card">
-                <h3>Brain Tumor Detection</h3>
-                <span class="date">Deep Learning & 3D Imaging</span>
-                <p style="margin-bottom: 15px;">Developed a hybrid detection model (SVM-KNN, CNN-SVM) using 3D MRI images to enhance prediction accuracy using TensorFlow.</p>
-                <div class="skill-container">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">CNN</span>
-                    <span class="skill-tag">OpenCV</span>
+        <h2 class="section-title">Deployed Systems</h2>
+        <div class="grid-container">
+            <div class="tilt-card" data-tilt>
+                <div class="card-content">
+                    <h3>Brain Tumor Detection</h3>
+                    <p style="margin-top: 10px;">Hybrid Deep Learning model combining CNN and SVM to analyze 3D MRI scans for early detection.</p>
+                    <div class="project-stat">
+                        <div class="stat-item">
+                            <span class="stat-val" style="color: var(--neon-green)">High</span>
+                            <span class="stat-lbl">Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-val">Python</span>
+                            <span class="stat-lbl">Stack</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <h3>ASL Gesture Recognition</h3>
-                <span class="date">Computer Vision</span>
-                <p style="margin-bottom: 15px;">A real-time system bridging communication gaps for the disabled. Achieved <strong>93.83% accuracy</strong> in translating gestures to text.</p>
-                <div class="skill-container">
-                    <span class="skill-tag">Transfer Learning</span>
-                    <span class="skill-tag">ROI Analysis</span>
-                    <span class="skill-tag">Deep Learning</span>
+
+            <div class="tilt-card" data-tilt>
+                <div class="card-content">
+                    <h3>ASL Gesture Recognition</h3>
+                    <p style="margin-top: 10px;">Real-time translation of American Sign Language gestures to text using computer vision.</p>
+                    <div class="project-stat">
+                        <div class="stat-item">
+                            <span class="stat-val" style="color: var(--neon-cyan)">93.8%</span>
+                            <span class="stat-lbl">Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-val">OpenCV</span>
+                            <span class="stat-lbl">Library</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="contact">
-        <div class="contact-box">
-            <h2>Let's Connect</h2>
-            <p style="color: #ccc; margin-bottom: 30px;">I am currently available for opportunities in Software Development.</p>
+        <h2 class="section-title">Establish Link</h2>
+        <div class="contact-grid">
             <div>
-                <a href="mailto:tungalabharath@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> tungalabharath@gmail.com</a>
-                <br>
-                <a href="tel:+917815996965" class="contact-link"><i class="fas fa-phone"></i> +91 7815996965</a>
+                <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px;">
+                    I am currently open to full-time opportunities in Data Engineering and Software Development. <br><br>
+                    Based in Krishna District, AP. Ready to relocate.
+                </p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                </div>
             </div>
-            <p style="margin-top: 30px; font-size: 0.9rem; color: #888;">Based in Avanigadda, Andhra Pradesh</p>
+            <div>
+                <div class="contact-info">
+                    <a href="mailto:tungalabharath@gmail.com">
+                        <i class="fas fa-paper-plane" style="color: var(--neon-purple)"></i>
+                        tungalabharath@gmail.com
+                    </a>
+                    <a href="tel:+917815996965">
+                        <i class="fas fa-phone-alt" style="color: var(--neon-cyan)"></i>
+                        +91 7815996965
+                    </a>
+                    <a href="#" style="pointer-events: none;">
+                        <i class="fas fa-map-marker-alt" style="color: var(--neon-green)"></i>
+                        Avanigadda, AP, India
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
+    <footer style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-family: var(--font-code); color: #555;">
+        System Status: Online | © 2026 Bharath Tungala
+    </footer>
+
     <script>
-        /* -----------------------------------------------------------
-           CUSTOM ANIMATION: YOUR DETAILS FLOATING IN BACKGROUND
-           ----------------------------------------------------------- */
-        const canvas = document.getElementById('custom-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
+        /* --- CUSTOM CURSOR LOGIC --- */
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
 
-        // Custom Floating Words based on your Resume
-        const words = [
-            "Bharath", "Tungala", "7815996965", 
-            "</>", "Python", "C", "HTML", 
-            "Data Engineer", "Snowflake", "Talend", 
-            "Brain Tumor", "ASL", "Deep Learning",
-            "Sonata", "SQL", "Linux", "IoT",
-            "Accuracy 93%", "Generative AI", "Vignan"
-        ];
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
 
-        let particles = [];
-        const mouse = { x: null, y: null, radius: 150 };
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
+            // Outline follows with lag (animation in CSS)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
         });
 
+        /* --- MOBILE MENU --- */
+        function toggleMenu() {
+            document.getElementById('mobileOverlay').classList.toggle('active');
+        }
+
+        /* --- SCROLL PROGRESS BAR --- */
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        /* --- 3D TILT EFFECT (VANILLA JS) --- */
+        const cards = document.querySelectorAll('.tilt-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -10; // Max rotation deg
+                const rotateY = ((x - centerX) / centerX) * 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        /* --- ADVANCED CANVAS: NEURAL NETWORK (CONSTELLATION) --- */
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Resize handling
         function resize() {
             width = window.innerWidth;
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
-            initParticles();
+            createParticles();
         }
-        window.addEventListener('resize', resize);
 
         class Particle {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.8; 
-                this.vy = (Math.random() - 0.5) * 0.8;
-                this.size = Math.random() * 12 + 10; 
-                this.text = words[Math.floor(Math.random() * words.length)];
-                
-                this.color = Math.random() > 0.5 
-                    ? 'rgba(0, 229, 255, 0.3)'  // Faint Cyan
-                    : 'rgba(255, 0, 127, 0.3)'; // Faint Pink
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#00f3ff' : '#bc13fe'; // Cyan or Purple
             }
 
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
 
+                // Bounce off edges
                 if (this.x < 0 || this.x > width) this.vx *= -1;
                 if (this.y < 0 || this.y > height) this.vy *= -1;
-
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-
-                if (distance < mouse.radius) {
-                    const force = (mouse.radius - distance) / mouse.radius;
-                    const dxForce = (dx / distance) * force * 2;
-                    const dyForce = (dy / distance) * force * 2;
-                    this.x -= dxForce; 
-                    this.y -= dyForce;
-                }
             }
 
             draw() {
-                ctx.font = this.size + 'px Fira Code';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
-                ctx.fillText(this.text, this.x, this.y);
+                ctx.fill();
             }
         }
 
-        function initParticles() {
+        function createParticles() {
             particles = [];
-            let numberOfParticles = (width * height) / 20000; 
-            for (let i = 0; i < numberOfParticles; i++) {
+            // Adjust particle count based on screen size for performance
+            const particleCount = width > 800 ? 100 : 50; 
+            for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
         }
 
-        function animate() {
+        function animateCanvas() {
             ctx.clearRect(0, 0, width, height);
             
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
 
+                // Draw Connections (Constellation Effect)
                 for (let j = i; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < 100) {
+                    if (distance < 120) { // Connection threshold
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(255, 255, 255, 0.05)`; 
+                        ctx.strokeStyle = `rgba(100, 100, 255, ${1 - distance / 120})`;
                         ctx.lineWidth = 0.5;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -541,41 +644,12 @@
                     }
                 }
             }
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateCanvas);
         }
 
+        window.addEventListener('resize', resize);
         resize();
-        animate();
-
-        /* -----------------------------------------------------------
-           TYPEWRITER EFFECT (Main Heading)
-           ----------------------------------------------------------- */
-        const textEl = document.getElementById('typewriter');
-        const phrases = ["Data Engineer", "Python Developer", "Problem Solver", "Innovator"];
-        let phraseIdx = 0;
-        let charIdx = 0;
-        let isDeleting = false;
-
-        function type() {
-            const current = phrases[phraseIdx];
-            if (isDeleting) {
-                textEl.textContent = current.substring(0, charIdx - 1);
-                charIdx--;
-            } else {
-                textEl.textContent = current.substring(0, charIdx + 1);
-                charIdx++;
-            }
-
-            if (!isDeleting && charIdx === current.length) {
-                setTimeout(() => isDeleting = true, 2000);
-            } else if (isDeleting && charIdx === 0) {
-                isDeleting = false;
-                phraseIdx = (phraseIdx + 1) % phrases.length;
-            }
-            setTimeout(type, isDeleting ? 100 : 150);
-        }
-        type();
+        animateCanvas();
     </script>
 </body>
-
 </html>
